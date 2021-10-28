@@ -58,3 +58,5 @@ router.post('/:id/read', ensureCorrectUser, async (req, res, next)=>{
         next(error)
     }
 })
+
+module.exports = router;

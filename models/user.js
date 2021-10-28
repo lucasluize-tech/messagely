@@ -7,11 +7,11 @@ const {BCRYPT_WORK_FACTOR, SECRET_KEY} = require('../config')
 
 class User {
   constructor({ username, password, first_name, last_name, phone, join_at, last_login_at }) {
-    this.username = username
+    this.username = username;
     this.password = password;
-    this.first_name = first_name
-    this.last_name = last_name
-    this.phone = phone
+    this.first_name = first_name;
+    this.last_name = last_name;
+    this.phone = phone;
     this.joinedAt = join_at;
     this.lastLoginAt = last_login_at;
 
@@ -26,7 +26,7 @@ class User {
       const result= await db.query(`INSERT INTO users (username, password, first_name, last_name, phone, join_at, last_login_at)
       VALUES ($1, $2, $3, $4, $5, current_timestamp, current_timestamp)
       RETURNING username, password, first_name, last_name, phone`, [username, hashedPassword, first_name, last_name, phone])
-
+      
       return result.rows[0]
   }
 
@@ -50,7 +50,8 @@ class User {
     
      const results =  await db.query(`UPDATE users 
     SET last_login_at= current_timestamp
-    WHERE username = $1`,
+    WHERE username = $1
+    RETURNING username`,
         [username]);
     if (!results.rows[0]) {
       throw new ExpressError(`user : ${username} not found`, 400)

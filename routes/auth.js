@@ -3,6 +3,7 @@ const router = express.Router()
 const User = require('../models/user')
 const jwt = require('jsonwebtoken');
 const {SECRET_KEY} = require('../config')
+const ExpressError = require('../expressError')
 
 /** POST /login - login: {username, password} => {token}
  *
@@ -16,13 +17,13 @@ router.post('/login', async (req, res, next) => {
         if (!username || !password) {
             throw new ExpressError('Please provide a username and password', 400)
         }
-        const auth = await User.authenticate(username, password);
-        if (auth) {
+        
+        if (await User.authenticate(username, password)) {
             User.updateLoginTimestamp(username)
             const token = jwt.sign({username}, SECRET_KEY)
             return res.json({token})
         }else{
-            throw new ExpressError('Invalid Username or Password',400)
+            throw new ExpressError('Invalid Username or Password', 400)
         }
     } catch (err) {
         next(err)
@@ -48,3 +49,5 @@ router.post('/register', async (req, res, next) => {
         next(e)
     }
 })
+
+module.exports = router;
